@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">FirebaseStorage</string>
+    <string name="app_name">PDF Render</string>
+
+    <string name="title_open_pdf">Open PDF</string>
+    <string name="disable_draw">Drawing feature is disabled</string>
+    <string name="enable_draw">Drawing feature is enabled</string>
 </resources>
