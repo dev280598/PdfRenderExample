@@ -1,19 +1,37 @@
+# Check out https://docs.codemagic.io/getting-started/yaml/for more information
+
 workflows:
   native-android:
     name: Native Android
-    max_build_duration: 120
-    instance_type: mac_mini_m1
+    instance_type: mac_pro
+    triggering:
+      events:
+        - push
+        - tag
+        - pull_request
+      branch_patterns:
+        - pattern: develop
+          include: true
+          source: true
+    scripts:
+      - name: AWS CLI configuration
+        script: |
+          mkdir ~/.aws
+          cat >> ~/.aws/config <<EOF
+          [default]
+          aws_access_key_id=$AWS_ACCESS_KEY_ID
+          aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
+          region=$AWS_DEFAULT_REGION
+          output=json
+          EOF
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+      - name: Build Android debug APK
+        script: |
+          ./gradlew assembleDebug
+      - name: Build Android test APK
+        script: |
+          ./gradlew assembleAndroidTest
     artifacts:
-      - app/build/outputs/**/*.aab
-#    publishing:
-#      email:
-#        recipients:
-#          - user_1@example.com
-#          - user_2@example.com
-#        notify:
-#          success: true
-#          failure: false
-#      google_play:
-#        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-#        track: internal
-#        submit_as_draft: true
+      - app/build/outputs/**/*.apk
