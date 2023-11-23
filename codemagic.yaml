@@ -27,9 +27,10 @@ workflows:
       - name: Set Android SDK location
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+      - name: Run tests
+        script: ./gradlew test
       - name: Build Android debug APK
-        script: |
-          ./gradlew assembleDebug
+        script: ./gradlew assembleDebug
       - name: Build Android test APK
         script: |
           ./gradlew assembleAndroidTest
